@@ -1,0 +1,29 @@
+name: Build PDF Manuals
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'docs/**/*.md'
+      - 'templates/**/*.md'
+      - 'knowledge/**/*.md'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pandoc
+        run: sudo apt-get update && sudo apt-get install -y pandoc texlive-xetex
+      - name: Build PDFs
+        run: |
+          mkdir -p pdf
+          for f in docs/*.md; do
+            base=$(basename "$f" .md)
+            pandoc "$f" -o "pdf/${base}.pdf" --pdf-engine=xelatex
+          done
+      - name: Upload PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: football-quant-fund-ai-pdfs
+          path: pdf/*.pdf
