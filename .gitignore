@@ -1,0 +1,6 @@
+*.tmp
+*.log
+.DS_Store
+pdf/*.aux
+pdf/*.log
+node_modules/
